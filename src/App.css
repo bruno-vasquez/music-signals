@@ -1,38 +1,94 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #E6C3A7;
   min-height: 100vh;
+  padding: 30px;
+}
+
+h1 {
+  color: #6A2C1A;
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: #5E8B3E;
+  margin-top: 30px;
+}
+
+.buttons-container {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.signal-button {
+  font-size: 16px;
+  padding: 12px 20px;
+  border: none;
+  background-color: #6A2C1A;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.signal-button:hover {
+  background-color: #5E8B3E;
+  transform: scale(1.05);
+}
+
+.custom-input {
+  padding: 10px;
+  width: 250px;
+  margin-top: 10px;
+  border: 2px solid #6A2C1A;
+  border-radius: 8px;
+}
+
+.send-button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  background-color: #5E8B3E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.send-button:hover {
+  background-color: #6A2C1A;
+  transform: scale(1.05);
+}
+
+.preview-box {
+  border: 3px solid #6A2C1A;
+  background-color: #fff;
+  color: #6A2C1A;
+  padding: 30px;
+  font-size: 28px;
+  margin-top: 20px;
+  min-height: 120px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.App-link {
-  color: #61dafb;
+input::placeholder {
+  color: #a67b5b;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 600px) {
+  .signal-button {
+    width: 100%;
   }
-  to {
-    transform: rotate(360deg);
+
+  .custom-input {
+    width: 90%;
   }
 }
