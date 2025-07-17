@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { db, ref, set, onValue } from "./firebase";
+import {
+  db,
+  ref,
+  set,
+  onValue,
+  remove,
+  onDisconnect
+} from "./firebase";
 import "./App.css";
-import logo from "./logo.png"; // asegúrate de que esté en la carpeta src
+import logo from "./logo.png";
 
 const signals = [
   { text: "Repetir", emoji: "🔁" },
@@ -21,6 +28,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState("");
   const [customMessage, setCustomMessage] = useState("");
   const [registeredName, setRegisteredName] = useState("");
+  const [usersOnline, setUsersOnline] = useState([]);
 
   // Leer señal actual
   useEffect(() => {
@@ -29,6 +37,22 @@ function App() {
       const data = snapshot.val();
       if (data) {
         setCurrentSignal(data.message + (data.user ? ` (de: ${data.user})` : ""));
+      } else {
+        setCurrentSignal("Esperando señal...");
+      }
+    });
+  }, []);
+
+  // Leer usuarios conectados
+  useEffect(() => {
+    const usersRef = ref(db, "users_online");
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const names = Object.keys(data);
+        setUsersOnline(names);
+      } else {
+        setUsersOnline([]);
       }
     });
   }, []);
@@ -40,32 +64,62 @@ function App() {
     }
   };
 
+  // Manejar presencia del usuario
+  useEffect(() => {
+    if (!registeredName) return;
+
+    const userRef = ref(db, `users_online/${registeredName}`);
+    const presenceRef = onDisconnect(userRef);
+
+    // Registrar al conectarse
+    set(userRef, {
+      timestamp: Date.now()
+    });
+
+    // Eliminar automáticamente si cierra o recarga
+    presenceRef.remove();
+
+    // Detectar si pierde el foco (cambia de pestaña o minimiza)
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        remove(userRef);
+      } else {
+        set(userRef, {
+          timestamp: Date.now()
+        });
+        onDisconnect(userRef).remove();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [registeredName]);
+
   // Enviar señal predefinida
   const sendSignal = (signal) => {
     if (!registeredName) return;
-    const now = Date.now();
     set(ref(db, "signal"), {
       message: signal,
       user: registeredName,
-      timestamp: now
+      timestamp: Date.now()
     });
-    set(ref(db, `activeUsers/${registeredName}`), now);
   };
 
   // Enviar mensaje personalizado
   const sendCustomMessage = () => {
     if (!registeredName || customMessage.trim() === "") return;
-    const now = Date.now();
     set(ref(db, "signal"), {
       message: customMessage,
       user: registeredName,
-      timestamp: now
+      timestamp: Date.now()
     });
-    set(ref(db, `activeUsers/${registeredName}`), now);
     setCustomMessage("");
   };
 
-  // Mostrar pantalla de registro
+  // Pantalla de registro
   if (!registeredName) {
     return (
       <div className="App">
@@ -119,6 +173,12 @@ function App() {
       <div className="preview-box">
         {currentSignal || "Esperando señal..."}
       </div>
+
+      {usersOnline.length > 0 && (
+        <div style={{ marginTop: "20px", color: "#6A2C1A" }}>
+          <strong>Usuarios activos:</strong> {usersOnline.join(", ")}
+        </div>
+      )}
     </div>
   );
 }
