@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db, ref, set, onValue } from "./firebase";
 import "./App.css";
-import logo from "./logo.png"; // Asegúrate de tener la imagen en src/
+import logo from "./logo.png"; // asegúrate de que esté en la carpeta src
 
 const signals = [
   { text: "Repetir", emoji: "🔁" },
@@ -43,19 +43,25 @@ function App() {
   // Enviar señal predefinida
   const sendSignal = (signal) => {
     if (!registeredName) return;
+    const now = Date.now();
     set(ref(db, "signal"), {
       message: signal,
-      user: registeredName
+      user: registeredName,
+      timestamp: now
     });
+    set(ref(db, `activeUsers/${registeredName}`), now);
   };
 
   // Enviar mensaje personalizado
   const sendCustomMessage = () => {
     if (!registeredName || customMessage.trim() === "") return;
+    const now = Date.now();
     set(ref(db, "signal"), {
       message: customMessage,
-      user: registeredName
+      user: registeredName,
+      timestamp: now
     });
+    set(ref(db, `activeUsers/${registeredName}`), now);
     setCustomMessage("");
   };
 

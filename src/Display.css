@@ -1,0 +1,43 @@
+.display-container {
+  background-color: #ffffff;
+  color: #000000;
+  text-align: center;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.display-logo {
+  width: 150px;
+  max-width: 80vw;
+  margin-bottom: 20px;
+}
+
+.display-message {
+  font-size: 8vw;
+  font-weight: bold;
+  margin-bottom: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.display-user {
+  font-size: 2.5vw;
+  margin-top: 10px;
+  color: #5E8B3E;
+}
+
+.display-time {
+  font-size: 1.8vw;
+  margin-top: 5px;
+  color: #444;
+}
+
+.display-users-list {
+  position: absolute;
+  bottom: 20px;
+  font-size: 1.2vw;
+  color: #6A2C1A;
+}
