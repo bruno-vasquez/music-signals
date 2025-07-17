@@ -25,7 +25,7 @@ function Display() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        fontSize: "5vw",
+        fontSize: "10vw",
         textAlign: "center"
       }}
     >

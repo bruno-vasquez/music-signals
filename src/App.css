@@ -1,3 +1,4 @@
+/* Estilos generales */
 .App {
   text-align: center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -6,6 +7,21 @@
   padding: 30px;
 }
 
+/* Logo */
+.logo-img {
+  width: 750px;
+  max-width: 90vw;
+  margin-bottom: 30px;
+  margin-top: 10px;
+  transition: transform 0.3s;
+}
+
+.logo-img:hover {
+  transform: scale(1.05);
+}
+
+
+/* Títulos */
 h1 {
   color: #6A2C1A;
   margin-bottom: 20px;
@@ -16,38 +32,50 @@ h2 {
   margin-top: 30px;
 }
 
+/* Botones estilo octopad */
 .buttons-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
   margin-top: 20px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .signal-button {
-  font-size: 16px;
-  padding: 12px 20px;
+  font-size: 18px;
+  padding: 30px 15px;
   border: none;
   background-color: #6A2C1A;
   color: white;
-  border-radius: 10px;
+  border-radius: 16px;
   cursor: pointer;
   transition: transform 0.2s, background-color 0.3s;
+  min-height: 90px;
+  white-space: pre-wrap;
 }
 
 .signal-button:hover {
   background-color: #5E8B3E;
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 
+/* Input personalizado */
 .custom-input {
   padding: 10px;
   width: 250px;
   margin-top: 10px;
   border: 2px solid #6A2C1A;
   border-radius: 8px;
+  font-size: 16px;
 }
 
+input::placeholder {
+  color: #a67b5b;
+}
+
+/* Botón de enviar */
 .send-button {
   padding: 10px 20px;
   margin-left: 10px;
@@ -57,6 +85,7 @@ h2 {
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s, background-color 0.3s;
+  font-size: 16px;
 }
 
 .send-button:hover {
@@ -64,6 +93,7 @@ h2 {
   transform: scale(1.05);
 }
 
+/* Caja de preview */
 .preview-box {
   border: 3px solid #6A2C1A;
   background-color: #fff;
@@ -76,19 +106,27 @@ h2 {
   align-items: center;
   justify-content: center;
   border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
-input::placeholder {
-  color: #a67b5b;
-}
-
+/* Responsivo */
 @media (max-width: 600px) {
   .signal-button {
-    width: 100%;
+    font-size: 16px;
+    padding: 20px;
+    min-height: 80px;
   }
 
   .custom-input {
     width: 90%;
+  }
+
+  .preview-box {
+    font-size: 22px;
+    padding: 20px;
   }
 }

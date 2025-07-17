@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { db, ref, set, onValue } from "./firebase";
 import "./App.css";
+import logo from "./logo.png"; // Asegúrate de tener la imagen en src/
 
 const signals = [
   { text: "Repetir", emoji: "🔁" },
   { text: "Subir Intensidad", emoji: "🔊" },
   { text: "Bajar Intensidad", emoji: "🔉" },
   { text: "Silencio", emoji: "✋" },
+  { text: "Siguiente", emoji: "⏭️" },
   { text: "Continuar", emoji: "🟢" },
-  { text: "Improvisar", emoji: "🎵" },
-  { text: "Solo Bateria", emoji: "🥁" },
-  { text: "Siguiente", emoji: "🎵" },
   { text: "Revisar notas", emoji: "🔴" },
-  { text: "Abel deja afinar", emoji: "🗣️" }
+  { text: "Solo Bateria", emoji: "🥁" },
+  { text: "Solo Guitarra", emoji: "🎸" },
+  { text: "Solo Violín", emoji: "🎻" }
 ];
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
   const [customMessage, setCustomMessage] = useState("");
   const [registeredName, setRegisteredName] = useState("");
 
+  // Leer señal actual
   useEffect(() => {
     const signalRef = ref(db, "signal");
     onValue(signalRef, (snapshot) => {
@@ -31,12 +33,14 @@ function App() {
     });
   }, []);
 
+  // Registrar nombre
   const handleRegister = () => {
     if (currentUser.trim() !== "") {
       setRegisteredName(currentUser.trim());
     }
   };
 
+  // Enviar señal predefinida
   const sendSignal = (signal) => {
     if (!registeredName) return;
     set(ref(db, "signal"), {
@@ -45,6 +49,7 @@ function App() {
     });
   };
 
+  // Enviar mensaje personalizado
   const sendCustomMessage = () => {
     if (!registeredName || customMessage.trim() === "") return;
     set(ref(db, "signal"), {
@@ -54,9 +59,11 @@ function App() {
     setCustomMessage("");
   };
 
+  // Mostrar pantalla de registro
   if (!registeredName) {
     return (
       <div className="App">
+        <img src={logo} alt="Logo Odres Nuevos" className="logo-img" />
         <h1>Regístrate</h1>
         <input
           type="text"
@@ -72,9 +79,12 @@ function App() {
     );
   }
 
+  // Pantalla principal
   return (
     <div className="App">
+      <img src={logo} alt="Logo Odres Nuevos" className="logo-img" />
       <h1>Enviar Señal (Hola, {registeredName}!)</h1>
+
       <div className="buttons-container">
         {signals.map((s, i) => (
           <button
