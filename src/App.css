@@ -1,4 +1,3 @@
-/* Estilos generales */
 .App {
   text-align: center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -7,7 +6,6 @@
   padding: 30px;
 }
 
-/* Logo */
 .logo-img {
   width: 750px;
   max-width: 90vw;
@@ -20,8 +18,6 @@
   transform: scale(1.05);
 }
 
-
-/* Títulos */
 h1 {
   color: #6A2C1A;
   margin-bottom: 20px;
@@ -32,7 +28,6 @@ h2 {
   margin-top: 30px;
 }
 
-/* Botones estilo octopad */
 .buttons-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -61,7 +56,6 @@ h2 {
   transform: scale(1.07);
 }
 
-/* Input personalizado */
 .custom-input {
   padding: 10px;
   width: 250px;
@@ -75,7 +69,6 @@ input::placeholder {
   color: #a67b5b;
 }
 
-/* Botón de enviar */
 .send-button {
   padding: 10px 20px;
   margin-left: 10px;
@@ -93,7 +86,6 @@ input::placeholder {
   transform: scale(1.05);
 }
 
-/* Caja de preview */
 .preview-box {
   border: 3px solid #6A2C1A;
   background-color: #fff;
@@ -113,7 +105,6 @@ input::placeholder {
   text-align: center;
 }
 
-/* Responsivo */
 @media (max-width: 600px) {
   .signal-button {
     font-size: 16px;

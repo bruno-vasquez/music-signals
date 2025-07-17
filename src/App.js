@@ -1,12 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  db,
-  ref,
-  set,
-  onValue,
-  remove,
-  onDisconnect
-} from "./firebase";
+import React, { useEffect, useState } from "react";
+import { db, ref, set, onValue, onDisconnect } from "./firebase";
 import "./App.css";
 import logo from "./logo.png";
 
@@ -24,81 +17,69 @@ const signals = [
 ];
 
 function App() {
-  const [currentSignal, setCurrentSignal] = useState("");
   const [currentUser, setCurrentUser] = useState("");
-  const [customMessage, setCustomMessage] = useState("");
   const [registeredName, setRegisteredName] = useState("");
-  const [usersOnline, setUsersOnline] = useState([]);
+  const [customMessage, setCustomMessage] = useState("");
+  const [currentSignal, setCurrentSignal] = useState("");
+  const [activeUsers, setActiveUsers] = useState([]);
 
-  // Leer señal actual
+useEffect(() => {
+  let userRef;
+
+  if (registeredName) {
+    userRef = ref(db, `activeUsers/${registeredName}`);
+    set(userRef, Date.now());
+    onDisconnect(userRef).remove();
+  }
+
+  const handleVisibilityChange = () => {
+    if (document.hidden && userRef) {
+      set(ref(db, `activeUsers/${registeredName}`), null); // Elimina si minimiza
+    } else if (!document.hidden && userRef) {
+      set(userRef, Date.now()); // Vuelve a aparecer si regresa
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+
+  return () => {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+  };
+}, [registeredName]);
+
   useEffect(() => {
     const signalRef = ref(db, "signal");
     onValue(signalRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         setCurrentSignal(data.message + (data.user ? ` (de: ${data.user})` : ""));
+      }
+    });
+
+    const activeRef = ref(db, "activeUsers");
+    onValue(activeRef, (snapshot) => {
+      const users = snapshot.val();
+      if (users) {
+        const userList = Object.keys(users);
+        setActiveUsers(userList);
       } else {
-        setCurrentSignal("Esperando señal...");
+        setActiveUsers([]);
       }
     });
   }, []);
 
-  // Leer usuarios conectados
-  useEffect(() => {
-    const usersRef = ref(db, "users_online");
-    onValue(usersRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const names = Object.keys(data);
-        setUsersOnline(names);
-      } else {
-        setUsersOnline([]);
-      }
-    });
-  }, []);
-
-  // Registrar nombre
   const handleRegister = () => {
     if (currentUser.trim() !== "") {
-      setRegisteredName(currentUser.trim());
+      const name = currentUser.trim();
+      setRegisteredName(name);
+
+      const userRef = ref(db, `activeUsers/${name}`);
+      set(userRef, Date.now());
+
+      onDisconnect(userRef).remove();
     }
   };
 
-  // Manejar presencia del usuario
-  useEffect(() => {
-    if (!registeredName) return;
-
-    const userRef = ref(db, `users_online/${registeredName}`);
-    const presenceRef = onDisconnect(userRef);
-
-    // Registrar al conectarse
-    set(userRef, {
-      timestamp: Date.now()
-    });
-
-    // Eliminar automáticamente si cierra o recarga
-    presenceRef.remove();
-
-    // Detectar si pierde el foco (cambia de pestaña o minimiza)
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        remove(userRef);
-      } else {
-        set(userRef, {
-          timestamp: Date.now()
-        });
-        onDisconnect(userRef).remove();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [registeredName]);
-
-  // Enviar señal predefinida
   const sendSignal = (signal) => {
     if (!registeredName) return;
     set(ref(db, "signal"), {
@@ -108,7 +89,6 @@ function App() {
     });
   };
 
-  // Enviar mensaje personalizado
   const sendCustomMessage = () => {
     if (!registeredName || customMessage.trim() === "") return;
     set(ref(db, "signal"), {
@@ -119,7 +99,6 @@ function App() {
     setCustomMessage("");
   };
 
-  // Pantalla de registro
   if (!registeredName) {
     return (
       <div className="App">
@@ -139,7 +118,6 @@ function App() {
     );
   }
 
-  // Pantalla principal
   return (
     <div className="App">
       <img src={logo} alt="Logo Odres Nuevos" className="logo-img" />
@@ -174,11 +152,10 @@ function App() {
         {currentSignal || "Esperando señal..."}
       </div>
 
-      {usersOnline.length > 0 && (
-        <div style={{ marginTop: "20px", color: "#6A2C1A" }}>
-          <strong>Usuarios activos:</strong> {usersOnline.join(", ")}
-        </div>
-      )}
+      <h2>Usuarios conectados:</h2>
+      <div style={{ marginTop: "10px", color: "#6A2C1A" }}>
+        {activeUsers.length > 0 ? activeUsers.join(", ") : "Ninguno conectado"}
+      </div>
     </div>
   );
 }
